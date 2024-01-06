@@ -1,34 +1,31 @@
-package hello.HelloSpring.service;
+package hello.hellospring.service;
 
-import hello.HelloSpring.domain.Member;
-import hello.HelloSpring.repository.MemberRepository;
-import hello.HelloSpring.repository.MemoryMemberRepository;
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemoryMemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@SpringBootTest
-@Transactional
-class MemberServiceIntegrationTest {
+class MemberServiceTest {
 
-    @Autowired MemberService memberService;
-    @Autowired
-    MemberRepository memberRepository;
-    
+    MemberService memberService;
+    MemoryMemberRepository memberRepository;
     @BeforeEach
     public void beforeEach() {
         memberRepository = new MemoryMemberRepository();
         memberService = new MemberService(memberRepository);
     }
 
+    @AfterEach
+    public void afterEach() {
+        memberRepository.clearStore();
+    }
+
     @Test
-    void 회원가입() {
+    void join() {
 
         //given
         Member member = new Member("hello");
@@ -58,14 +55,18 @@ class MemberServiceIntegrationTest {
     @Test
     void findMembers() {
         //given
-        Member member = new Member("hello2");
+        Member member = new Member("hello");
         memberService.join(member);
 
         //when
         List<Member> members = memberService.findMembers();
 
         //then
-        Assertions.assertThat(members.size()).isEqualTo(3);
+        Assertions.assertThat(members.size()).isEqualTo(1);
 
+    }
+
+    @Test
+    void findOne() {
     }
 }
